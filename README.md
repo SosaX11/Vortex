@@ -14,7 +14,7 @@ local Vortex = loadstring(game:HttpGet("https://raw.githubusercontent.com/SosaX1
 
 # Creating a Window
 
-The window is the main container for your UI.
+The window is the main container for the UI.
 
 ```lua
 local Window = Vortex:Window({
