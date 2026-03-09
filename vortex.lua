@@ -37,23 +37,23 @@ local Flags          = Vortex.Flags
 local ConfigFlags    = Vortex.ConfigFlags
 local Notifications  = Vortex.Notifications
 
--- Theme customized to Red and Black
+-- Theme customized to match the image (Black and Red with Red Glow)
 local themes = {
     preset = {
-        accent       = rgb(220, 30, 30),   -- Vibrant Red for toggles/active states
-        glow         = rgb(220, 30, 30),   
+        accent       = rgb(255, 0, 0),     -- Pure Red for active toggles
+        glow         = rgb(255, 0, 0),     -- Red Glow behind the window
         
-        background   = rgb(12, 12, 12),    -- Main black background (Right side)
-        sidebar      = rgb(16, 16, 16),    -- Slightly lighter black for sidebar
-        section      = rgb(22, 22, 22),    -- Container/Dropdown backgrounds
-        element      = rgb(30, 30, 30),    -- Lighter dark gray for elements/hover
+        background   = rgb(20, 20, 20),    -- Main black/dark grey background (Right side)
+        sidebar      = rgb(12, 12, 12),    -- Darker black for the left sidebar
+        section      = rgb(28, 28, 28),    -- Elements/Dropdowns background
+        element      = rgb(40, 40, 40),    -- Lighter grey for hover states
         
-        outline      = rgb(45, 45, 45),    -- Subtle dark borders
+        outline      = rgb(255, 0, 0),     -- Red Borders
         text         = rgb(255, 255, 255), -- White text
-        subtext      = rgb(160, 160, 160), -- Gray for subtext
+        subtext      = rgb(170, 170, 170), -- Light grey for subtext
         
-        tab_active   = rgb(30, 30, 30),    -- Highlighted tab
-        tab_inactive = rgb(16, 16, 16),    -- Normal tab
+        tab_active   = rgb(255, 0, 0),     -- Highlighted tab (Red)
+        tab_inactive = rgb(12, 12, 12),    -- Normal tab (Black)
     },
     utility = {}
 }
@@ -117,7 +117,7 @@ end
 -- Window Construction
 function Vortex:Window(properties)
     local Cfg = {
-        Title = properties.Title or properties.title or "VortexHub", -- Changed to VortexHub
+        Title = properties.Title or properties.title or "VortexHub", 
         Size = properties.Size or properties.size or dim2(0, 650, 0, 450), 
         TabInfo = nil, Items = {}, Tweening = false, IsSwitchingTab = false;
     }
@@ -137,6 +137,14 @@ function Vortex:Window(properties)
         Size = Cfg.Size, BackgroundTransparency = 1, BorderSizePixel = 0
     })
     
+    -- Red Glow Effect
+    Items.Glow = Vortex:Create("ImageLabel", {
+        Parent = Items.Wrapper, Position = dim2(0, -15, 0, -15), Size = dim2(1, 30, 1, 30),
+        BackgroundTransparency = 1, Image = "rbxassetid://5028857084", ImageColor3 = themes.preset.glow,
+        ScaleType = Enum.ScaleType.Slice, SliceCenter = Rect.new(24, 24, 276, 276), ZIndex = 0
+    })
+    Vortex:Themify(Items.Glow, "glow", "ImageColor3")
+
     Items.Window = Vortex:Create("Frame", {
         Parent = Items.Wrapper, Position = dim2(0, 0, 0, 0), Size = dim2(1, 0, 1, 0),
         BackgroundColor3 = themes.preset.background, BorderSizePixel = 0, ZIndex = 1, ClipsDescendants = true
@@ -168,10 +176,10 @@ function Vortex:Window(properties)
     Items.Header = Vortex:Create("Frame", { Parent = Items.Sidebar, Size = dim2(1, 0, 0, 60), BackgroundTransparency = 1 })
     
     Items.LogoIcon = Vortex:Create("TextLabel", {
-        Parent = Items.Header, Text = "$", TextColor3 = themes.preset.accent, AnchorPoint = vec2(0, 0.5), Position = dim2(0, 15, 0.5, 0), Size = dim2(0, 20, 0, 20),
+        Parent = Items.Header, Text = "$", TextColor3 = themes.preset.text, AnchorPoint = vec2(0, 0.5), Position = dim2(0, 15, 0.5, 0), Size = dim2(0, 20, 0, 20),
         BackgroundTransparency = 1, FontFace = Font.new("rbxassetid://12187365364", Enum.FontWeight.ExtraBold), TextSize = 18, TextXAlignment = Enum.TextXAlignment.Center
     })
-    Vortex:Themify(Items.LogoIcon, "accent", "TextColor3")
+    Vortex:Themify(Items.LogoIcon, "text", "TextColor3")
 
     Items.LogoText = Vortex:Create("TextLabel", {
         Parent = Items.Header, Text = Cfg.Title, TextColor3 = themes.preset.text, AnchorPoint = vec2(0, 0.5), Position = dim2(0, 40, 0.5, 0), Size = dim2(1, -40, 0, 20),
@@ -202,14 +210,14 @@ function Vortex:Window(properties)
     Vortex:Create("UICorner", { Parent = Items.Avatar, CornerRadius = dim(1, 0) })
 
     Items.Username = Vortex:Create("TextLabel", {
-        Parent = Items.Footer, Text = lp.Name, TextColor3 = themes.preset.text, AnchorPoint = vec2(0, 0), Position = dim2(0, 55, 0, 16), Size = dim2(0, 100, 0, 14),
-        BackgroundTransparency = 1, FontFace = Font.new("rbxassetid://12187365364", Enum.FontWeight.Bold), TextSize = 13, TextXAlignment = Enum.TextXAlignment.Left, TextTruncate = Enum.TextTruncate.AtEnd
+        Parent = Items.Footer, Text = "Anonymous", TextColor3 = themes.preset.text, AnchorPoint = vec2(0, 0), Position = dim2(0, 55, 0, 16), Size = dim2(0, 100, 0, 14),
+        BackgroundTransparency = 1, FontFace = Font.new("rbxassetid://12187365364", Enum.FontWeight.Bold), TextSize = 13, TextXAlignment = Enum.TextXAlignment.Left
     })
     Vortex:Themify(Items.Username, "text", "TextColor3")
 
     Items.Subname = Vortex:Create("TextLabel", {
-        Parent = Items.Footer, Text = "@" .. lp.DisplayName, TextColor3 = themes.preset.subtext, AnchorPoint = vec2(0, 0), Position = dim2(0, 55, 0, 30), Size = dim2(0, 100, 0, 12),
-        BackgroundTransparency = 1, FontFace = Font.new("rbxassetid://12187365364", Enum.FontWeight.Medium), TextSize = 11, TextXAlignment = Enum.TextXAlignment.Left, TextTruncate = Enum.TextTruncate.AtEnd
+        Parent = Items.Footer, Text = "@anonymous", TextColor3 = themes.preset.subtext, AnchorPoint = vec2(0, 0), Position = dim2(0, 55, 0, 30), Size = dim2(0, 100, 0, 12),
+        BackgroundTransparency = 1, FontFace = Font.new("rbxassetid://12187365364", Enum.FontWeight.Medium), TextSize = 11, TextXAlignment = Enum.TextXAlignment.Left
     })
     Vortex:Themify(Items.Subname, "subtext", "TextColor3")
 
@@ -244,9 +252,11 @@ function Vortex:Window(properties)
             Items.Wrapper.Visible = true
             Vortex:Tween(Items.Wrapper, {Size = Cfg.Size}, TweenInfo.new(0.4, Enum.EasingStyle.Back, Enum.EasingDirection.Out))
             Vortex:Tween(Items.Window, {BackgroundTransparency = 0}, TweenInfo.new(0.3))
+            Vortex:Tween(Items.Glow, {ImageTransparency = 0}, TweenInfo.new(0.3))
         else
             Vortex:Tween(Items.Wrapper, {Size = dim2(0, Cfg.Size.X.Offset, 0, 0)}, TweenInfo.new(0.4, Enum.EasingStyle.Back, Enum.EasingDirection.In))
             Vortex:Tween(Items.Window, {BackgroundTransparency = 1}, TweenInfo.new(0.3))
+            Vortex:Tween(Items.Glow, {ImageTransparency = 1}, TweenInfo.new(0.3))
             task.delay(0.4, function() Items.Wrapper.Visible = false end)
         end
     end
@@ -277,18 +287,18 @@ function Vortex:Tab(properties)
         Items.IconImg = Vortex:Create("ImageLabel", { 
             Parent = Items.Button, AnchorPoint = vec2(0, 0.5), Position = dim2(0, 10, 0.5, 0),
             Size = dim2(0, 16, 0, 16), BackgroundTransparency = 1, 
-            Image = Cfg.Icon, ImageColor3 = themes.preset.subtext, ZIndex = 6 
+            Image = Cfg.Icon, ImageColor3 = themes.preset.text, ZIndex = 6 
         })
-        Vortex:Themify(Items.IconImg, "subtext", "ImageColor3")
+        Vortex:Themify(Items.IconImg, "text", "ImageColor3")
 
         Items.Label = Vortex:Create("TextLabel", {
             Parent = Items.Button, AnchorPoint = vec2(0, 0.5), Position = dim2(0, 36, 0.5, 0), Size = dim2(1, -40, 0, 14),
-            BackgroundTransparency = 1, Text = Cfg.Name, TextColor3 = themes.preset.subtext, FontFace = Font.new("rbxassetid://12187365364", Enum.FontWeight.Medium), TextSize = 13, TextXAlignment = Enum.TextXAlignment.Left, ZIndex = 6
+            BackgroundTransparency = 1, Text = Cfg.Name, TextColor3 = themes.preset.text, FontFace = Font.new("rbxassetid://12187365364", Enum.FontWeight.Medium), TextSize = 13, TextXAlignment = Enum.TextXAlignment.Left, ZIndex = 6
         })
-        Vortex:Themify(Items.Label, "subtext", "TextColor3")
+        Vortex:Themify(Items.Label, "text", "TextColor3")
         
         Items.Button.MouseEnter:Connect(function()
-            if self.TabInfo ~= Cfg.Items then Vortex:Tween(Items.Button, {BackgroundTransparency = 0.8}, TweenInfo.new(0.2)) end
+            if self.TabInfo ~= Cfg.Items then Vortex:Tween(Items.Button, {BackgroundTransparency = 0.5}, TweenInfo.new(0.2)) end
         end)
         Items.Button.MouseLeave:Connect(function()
             if self.TabInfo ~= Cfg.Items then Vortex:Tween(Items.Button, {BackgroundTransparency = 1}, TweenInfo.new(0.2)) end
@@ -319,16 +329,8 @@ function Vortex:Tab(properties)
 
         local buttonTween = TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
 
-        if oldTab and oldTab.Button then 
-            Vortex:Tween(oldTab.Button, {BackgroundTransparency = 1}, buttonTween) 
-            Vortex:Tween(oldTab.Label, {TextColor3 = themes.preset.subtext, FontFace = Font.new("rbxassetid://12187365364", Enum.FontWeight.Medium)}, buttonTween) 
-            Vortex:Tween(oldTab.IconImg, {ImageColor3 = themes.preset.subtext}, buttonTween) 
-        end
-        if Items.Button then 
-            Vortex:Tween(Items.Button, {BackgroundTransparency = 0}, buttonTween) 
-            Vortex:Tween(Items.Label, {TextColor3 = themes.preset.text, FontFace = Font.new("rbxassetid://12187365364", Enum.FontWeight.Bold)}, buttonTween) 
-            Vortex:Tween(Items.IconImg, {ImageColor3 = themes.preset.text}, buttonTween) 
-        end
+        if oldTab and oldTab.Button then Vortex:Tween(oldTab.Button, {BackgroundTransparency = 1}, buttonTween) end
+        if Items.Button then Vortex:Tween(Items.Button, {BackgroundTransparency = 0}, buttonTween) end
         
         task.spawn(function()
             if oldTab then
@@ -375,9 +377,9 @@ function Vortex:Section(properties)
     
     Items.Title = Vortex:Create("TextLabel", { 
         Parent = Items.Header, Position = dim2(0, 0, 0.5, 0), AnchorPoint = vec2(0, 0.5), Size = dim2(1, 0, 0, 14), 
-        BackgroundTransparency = 1, Text = Cfg.Name, TextColor3 = themes.preset.accent, FontFace = Font.new("rbxassetid://12187365364", Enum.FontWeight.Bold), TextSize = 14, TextXAlignment = Enum.TextXAlignment.Left 
+        BackgroundTransparency = 1, Text = Cfg.Name, TextColor3 = themes.preset.text, FontFace = Font.new("rbxassetid://12187365364", Enum.FontWeight.Bold), TextSize = 14, TextXAlignment = Enum.TextXAlignment.Left 
     })
-    Vortex:Themify(Items.Title, "accent", "TextColor3")
+    Vortex:Themify(Items.Title, "text", "TextColor3")
 
     Items.Container = Vortex:Create("Frame", { 
         Parent = Items.Section, Position = dim2(0, 0, 0, 25), Size = dim2(1, 0, 0, 0), 
@@ -408,7 +410,6 @@ function Vortex:Toggle(properties)
     })
     Vortex:Themify(Items.Button, "section", "BackgroundColor3")
     Vortex:Create("UICorner", { Parent = Items.Button, CornerRadius = dim(0, 6) })
-    Vortex:Themify(Vortex:Create("UIStroke", { Parent = Items.Button, Color = themes.preset.outline, Thickness = 1 }), "outline", "Color")
 
     Items.Title = Vortex:Create("TextLabel", { 
         Parent = Items.Button, Position = dim2(0, 10, 0, hasSub and 10 or (height/2 - 7)), Size = dim2(1, -60, 0, 14), 
@@ -478,7 +479,6 @@ function Vortex:Button(properties)
     Vortex:Themify(Items.Button, "section", "BackgroundColor3")
     Vortex:Themify(Items.Button, "text", "TextColor3")
     Vortex:Create("UICorner", { Parent = Items.Button, CornerRadius = dim(0, 6) })
-    Vortex:Themify(Vortex:Create("UIStroke", { Parent = Items.Button, Color = themes.preset.outline, Thickness = 1 }), "outline", "Color")
 
     Items.Button.MouseEnter:Connect(function()
         Vortex:Tween(Items.Button, {BackgroundColor3 = Vortex:Lighten(themes.preset.section, 0.05)}, TweenInfo.new(0.2))
@@ -515,7 +515,6 @@ function Vortex:Dropdown(properties)
     })
     Vortex:Themify(Items.Main, "section", "BackgroundColor3")
     Vortex:Create("UICorner", { Parent = Items.Main, CornerRadius = dim(0, 6) })
-    Vortex:Themify(Vortex:Create("UIStroke", { Parent = Items.Main, Color = themes.preset.outline, Thickness = 1 }), "outline", "Color")
 
     Items.SelectedText = Vortex:Create("TextLabel", { Parent = Items.Main, Position = dim2(0, 10, 0, 0), Size = dim2(1, -24, 1, 0), BackgroundTransparency = 1, Text = Cfg.Name .. " ...", TextColor3 = themes.preset.text, TextSize = 13, FontFace = Font.new("rbxassetid://12187365364", Enum.FontWeight.Medium), TextXAlignment = Enum.TextXAlignment.Left })
     Vortex:Themify(Items.SelectedText, "text", "TextColor3")
@@ -529,7 +528,6 @@ function Vortex:Dropdown(properties)
     })
     Vortex:Themify(Items.DropFrame, "element", "BackgroundColor3")
     Vortex:Create("UICorner", { Parent = Items.DropFrame, CornerRadius = dim(0, 6) })
-    Vortex:Themify(Vortex:Create("UIStroke", { Parent = Items.DropFrame, Color = themes.preset.outline, Thickness = 1 }), "outline", "Color")
 
     Items.Scroll = Vortex:Create("ScrollingFrame", { 
         Parent = Items.DropFrame, Size = dim2(1, 0, 1, -8), Position = dim2(0, 0, 0, 4), 
@@ -641,7 +639,6 @@ function Vortex:Slider(properties)
     Items.Container = Vortex:Create("Frame", { Parent = self.Items.Container, Size = dim2(1, 0, 0, 48), BackgroundColor3 = themes.preset.section, BorderSizePixel = 0 })
     Vortex:Themify(Items.Container, "section", "BackgroundColor3")
     Vortex:Create("UICorner", {Parent = Items.Container, CornerRadius = dim(0, 6)})
-    Vortex:Themify(Vortex:Create("UIStroke", { Parent = Items.Container, Color = themes.preset.outline, Thickness = 1 }), "outline", "Color")
 
     Items.Title = Vortex:Create("TextLabel", { Parent = Items.Container, Position = dim2(0, 10, 0, 0), Size = dim2(1, -20, 0, 26), BackgroundTransparency = 1, Text = Cfg.Name, TextColor3 = themes.preset.text, TextSize = 13, FontFace = Font.new("rbxassetid://12187365364", Enum.FontWeight.Medium), TextXAlignment = Enum.TextXAlignment.Left })
     Vortex:Themify(Items.Title, "text", "TextColor3")
@@ -710,7 +707,6 @@ function Vortex:Textbox(properties)
     Items.Bg = Vortex:Create("Frame", { Parent = Items.Container, Size = dim2(1, 0, 1, 0), BackgroundColor3 = themes.preset.section })
     Vortex:Themify(Items.Bg, "section", "BackgroundColor3")
     Vortex:Create("UICorner", { Parent = Items.Bg, CornerRadius = dim(0, 6) })
-    Vortex:Themify(Vortex:Create("UIStroke", { Parent = Items.Bg, Color = themes.preset.outline, Thickness = 1 }), "outline", "Color")
     
     Items.Input = Vortex:Create("TextBox", { 
         Parent = Items.Bg, Position = dim2(0, 10, 0, 0), Size = dim2(1, -20, 1, 0), BackgroundTransparency = 1, 
@@ -762,7 +758,6 @@ function Vortex:Keybind(properties)
     local Container = Vortex:Create("Frame", { Parent = self.Items.Container, Size = dim2(1, 0, 0, 36), BackgroundColor3 = themes.preset.section, BorderSizePixel = 0 })
     Vortex:Themify(Container, "section", "BackgroundColor3")
     Vortex:Create("UICorner", {Parent = Container, CornerRadius = dim(0, 6)})
-    Vortex:Themify(Vortex:Create("UIStroke", { Parent = Container, Color = themes.preset.outline, Thickness = 1 }), "outline", "Color")
 
     local Title = Vortex:Create("TextLabel", { Parent = Container, Position = dim2(0, 10, 0, 0), Size = dim2(1, -60, 1, 0), BackgroundTransparency = 1, Text = Cfg.Name, TextColor3 = themes.preset.text, TextSize = 13, FontFace = Font.new("rbxassetid://12187365364", Enum.FontWeight.Medium), TextXAlignment = Enum.TextXAlignment.Left })
     Vortex:Themify(Title, "text", "TextColor3")
@@ -814,7 +809,6 @@ function Vortex:Colorpicker(properties)
     Items.Container = Vortex:Create("Frame", { Parent = self.Items.Container, Size = dim2(1, 0, 0, 36), BackgroundColor3 = themes.preset.section, BorderSizePixel = 0 })
     Vortex:Themify(Items.Container, "section", "BackgroundColor3")
     Vortex:Create("UICorner", {Parent = Items.Container, CornerRadius = dim(0, 6)})
-    Vortex:Themify(Vortex:Create("UIStroke", { Parent = Items.Container, Color = themes.preset.outline, Thickness = 1 }), "outline", "Color")
 
     Items.Title = Vortex:Create("TextLabel", { Parent = Items.Container, Position = dim2(0, 10, 0, 0), Size = dim2(1, -60, 1, 0), BackgroundTransparency = 1, Text = Cfg.Name, TextColor3 = themes.preset.text, TextSize = 13, FontFace = Font.new("rbxassetid://12187365364", Enum.FontWeight.Medium), TextXAlignment = Enum.TextXAlignment.Left })
     Vortex:Themify(Items.Title, "text", "TextColor3")
@@ -827,7 +821,6 @@ function Vortex:Colorpicker(properties)
     Items.DropFrame = Vortex:Create("Frame", { Parent = Vortex.Gui, Size = dim2(0, 160, 0, 0), BackgroundColor3 = themes.preset.element, Visible = false, ZIndex = 200, ClipsDescendants = true })
     Vortex:Themify(Items.DropFrame, "element", "BackgroundColor3")
     Vortex:Create("UICorner", { Parent = Items.DropFrame, CornerRadius = dim(0, 6) })
-    Vortex:Themify(Vortex:Create("UIStroke", { Parent = Items.DropFrame, Color = themes.preset.outline, Thickness = 1 }), "outline", "Color")
 
     Items.SVMap = Vortex:Create("TextButton", { Parent = Items.DropFrame, Position = dim2(0, 10, 0, 10), Size = dim2(1, -20, 1, -44), AutoButtonColor = false, Text = "", BackgroundColor3 = Color3.fromHSV(h, 1, 1), ZIndex = 201 })
     Vortex:Create("UICorner", { Parent = Items.SVMap, CornerRadius = dim(0, 4) })
@@ -941,7 +934,6 @@ function Notifications:Create(properties)
     Items.Outline = Vortex:Create("Frame", { Parent = Vortex.Gui; Position = dim_offset(-500, 50); Size = dim2(0, 300, 0, 0); AutomaticSize = Enum.AutomaticSize.Y; BackgroundColor3 = themes.preset.background; BorderSizePixel = 0; ZIndex = 300, ClipsDescendants = true })
     Vortex:Themify(Items.Outline, "background", "BackgroundColor3")
     Vortex:Create("UICorner", { Parent = Items.Outline, CornerRadius = dim(0, 6) })
-    Vortex:Themify(Vortex:Create("UIStroke", {Parent = Items.Outline, Color = themes.preset.outline, Thickness = 1}), "outline", "Color")
    
     Items.Name = Vortex:Create("TextLabel", {
         Parent = Items.Outline; Text = Cfg.Name; TextColor3 = themes.preset.text; FontFace = Font.new("rbxassetid://12187365364", Enum.FontWeight.Medium);
