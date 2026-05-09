@@ -1,5 +1,3 @@
---- START OF FILE Paste March 09, 2026 - 2:27PM ---
-
 -- Services 
 local InputService  = game:GetService("UserInputService")
 local HttpService   = game:GetService("HttpService")
@@ -273,7 +271,7 @@ function Vortex:Window(properties)
         Vortex.ToggleGui = Vortex:Create("ScreenGui", { Parent = CoreGui, Name = "VortexToggle", IgnoreGuiInset = true })
         local ToggleButton = Vortex:Create("ImageButton", {
             Name = "ToggleButton", Parent = Vortex.ToggleGui, Position = UDim2.new(1, -80, 0, 150), Size = UDim2.new(0, 55, 0, 55),
-            BackgroundTransparency = 0.2, BackgroundColor3 = themes.preset.element, Image = "rbxthumb://type=Asset&id=117777120335047&w=150&h=150", ZIndex = 10000,
+            BackgroundTransparency = 0.2, BackgroundColor3 = themes.preset.element, Image = "rbxthumb://type=Asset&id=132745745021065&w=150&h=150", ZIndex = 10000,
         })
         Vortex:Create("UICorner", { Parent = ToggleButton, CornerRadius = dim(0, 12) })
         Vortex:Themify(ToggleButton, "element", "BackgroundColor3")
